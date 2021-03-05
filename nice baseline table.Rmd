@@ -1,0 +1,191 @@
+---
+title: "Simple Baseline Table"
+author: "Eamonn O'Brien<br><small><br>Biostatistics<br></small>"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::readthedown:
+    thumbnails: false
+    lightbox: false
+    gallery: false
+    highlight: tango
+    use_bookdown: true
+    toc_depth: 3
+    fig_caption: true
+    code_folding: hide
+link-citations: yes
+description: "xxxxxx"
+---
+<style>
+.table {
+	width: 50%;
+}
+p.caption {
+  font-size: 0.8em;
+  color: DarkBlue;
+}
+body { 
+	max-width: 1900px; 
+	margin: 0 auto !important; 
+	margin-right: 0 !important;
+	float: none !important; 
+}
+</style>
+
+
+
+```{r setup,echo=FALSE,include=FALSE}
+
+  set.seed(124)
+  library(Hmisc)
+  
+  knitrSet(lang='markdown', w=7, h=7, dev='svg', fig.path='folder/')
+  options(prType='html')
+  options(width=200)
+  
+  # format function 
+     formatz <- function(x){
+        if (!is.na(x)  ) {
+          sprintf(x, fmt = '%#.1f')  
+         }
+   }
+ 
+```
+
+# Introduction
+
+Simple baseline table
+
+```{r, } 
+
+ n <- 1000
+age <- 50 + 12*rnorm(n)
+label(age) <- "Age"
+sex <- factor(sample(c('Male','Female'), n, 
+                     rep=TRUE, prob=c(.6, .4)))
+
+label(sex) <- "Sex"
+
+h <- .02*exp(.04*(age-50)+.8*(sex=='Female'))
+dt <- -log(runif(n))/h
+label(dt) <- 'Follow-up Time'
+
+race   <- factor(sample(c('Asian','Black',"Caucasian"), n, 
+                          rep=TRUE, prob=c(.3, .2,.5)))
+
+label(race) <- 'Race'
+
+
+biomarker <-  rnorm(n,100,10)
+label(biomarker) <- "Biomarker"
+
+sbp <-  rnorm(n ,110,10)
+label(sbp) <- "Systolic blood pressure (mmHg)"
+
+
+dbp <-   rnorm(n,80,10)
+label(dbp) <- "Diastolic blood pressure (mmHg)"
+
+
+p <- sample(1:10,1) ## percent missing
+ind <-  sample(1:n, p/100*n) # get indices
+#now replace those indices in foo with NA
+age[ind]<-NA
+
+p <- sample(1:10,1) ## percent missing
+ind <-  sample(1:n, p/100*n) # get indices
+#now replace those indices in foo with NA
+sex[ind]<-NA
+
+p <- sample(1:10,1) ## percent missing
+ind <-  sample(1:n, p/100*n) # get indices
+#now replace those indices in foo with NA
+dt[ind]<-NA
+
+p <- sample(1:10,1) ## percent missing
+ind <-  sample(1:n, p/100*n) # get indices
+#now replace those indices in foo with NA
+race[ind]<-NA
+
+
+p <- sample(1:10,1) ## percent missing
+ind <-  sample(1:n, p/100*n) # get indices
+#now replace those indices in foo with NA
+biomarker[ind]<-NA
+
+p <- sample(1:10,1) ## percent missing
+ind <-  sample(1:n, p/100*n) # get indices
+#now replace those indices in foo with NA
+sbp[ind]<-NA
+
+p <- sample(1:10,1) ## percent missing
+ind <-  sample(1:n, p/100*n) # get indices
+#now replace those indices in foo with NA
+dbp[ind]<-NA
+
+
+trt <- factor(sample(c('drug','placebo'), n, 
+                     rep=TRUE, prob=c(.5, .5)))
+label(trt) <- 'Treatment'
+
+require(Hmisc)
+
+
+
+
+ 
+trt=as.character(trt)
+sex=as.character(sex)
+race=as.character(race)
+
+
+dt=as.numeric(as.character(dt))
+ biomarker=as.numeric(as.character(biomarker))
+ sbp=as.numeric(as.character(sbp))
+ dbp=as.numeric(as.character(dbp))
+  age=as.numeric(as.character(age))         
+
+
+d <- data.frame(cbind(trt,age,sex,dt,race,biomarker, sbp, dbp))
+
+
+da <-  d
+
+da$trt <-     factor(da$trt)
+da$sex <-     factor(da$sex)
+da$race <-     factor(da$race)
+
+
+
+da$dt=as.numeric(as.character(da$dt))
+da$biomarker=as.numeric(as.character(da$biomarker))
+da$sbp=as.numeric(as.character(da$sbp))
+da$dbp=as.numeric(as.character(da$dbp))
+da$age=as.numeric(as.character(da$age))         
+
+label(race) <- 'Race'
+label(da$age)  <- 'Age'                       # labels for forest plots
+label(da$trt)  <- 'Treatment'
+label(da$sbp) <- "Systolic blood pressure (mmHg)"
+label(da$dbp) <- "Diastolic blood pressure (mmHg)"
+label(da$dt) <- 'Follow-up Time'
+label(da$race) <- 'Race'
+label(da$biomarker) <- "Biomarker"
+label(da$sex) <- "Sex"
+  
+x <- summaryM(race + sex + age + dt + biomarker + sbp + dbp ~ trt , data=da , overall=TRUE )
+
+
+
+
+
+ html(x, middle.bold=TRUE, prmsd=TRUE, long=TRUE, exclude1=FALSE, rmarkdown=TRUE, 
+      caption="Baseline descriptive statistics, stratified by treatment", round=2, digits=2, npct='both', width="100%")
+
+ 
+
+
+```
+
+# Computing Environment
+
+`r markupSpecs$html$session()`
